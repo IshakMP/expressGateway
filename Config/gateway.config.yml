@@ -6,20 +6,22 @@ admin:
 apiEndpoints:
   api:
     host: localhost
-    paths: '/ip'
+    paths: "/ip"
   loyalty:
     host: localhost
-    paths: '/v1/loyalty'
+    paths: "/v1/loyalty"
   campaign:
     host: localhost
-    paths: '/v1/campaign'
+    paths: "/v1/campaign"
 serviceEndpoints:
   httpbin:
-    url: 'https://httpbin.org'
+    url: "https://httpbin.org"
+  google:
+    url: "www.google.co.in"
   loyaltyService:
-    url: 'https://mvxf4gn5-3000.inc1.devtunnels.ms/'
+    url: "https://mvxf4gn5-3000.inc1.devtunnels.ms/"
   campaignService:
-    url: 'localhost:5000'
+    url: "https://mvxf4gn5-5000.inc1.devtunnels.ms/"
 policies:
   - basic-auth
   - cors
@@ -29,21 +31,34 @@ policies:
   - oauth2
   - proxy
   - rate-limit
+  - request-transformer
+
 pipelines:
   default:
     apiEndpoints:
       - api
     policies:
-      # Uncomment `key-auth:` when instructed to in the Getting Started guide.
-      # - key-auth:
       - proxy:
           - action:
               serviceEndpoint: httpbin
+              changeOrigin: true
+  google:
+    apiEndpoints:
+      - google
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: google
               changeOrigin: true
   loyaltyPipeline:
     apiEndpoints:
       - loyalty
     policies:
+      - request-transformer:
+          - action:
+              headers:
+                add:
+                  x-tocken: "'tocken1'"
       - proxy:
           - action:
               serviceEndpoint: loyaltyService
