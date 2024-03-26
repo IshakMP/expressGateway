@@ -7,9 +7,19 @@ apiEndpoints:
   api:
     host: localhost
     paths: '/ip'
+  loyalty:
+    host: localhost
+    paths: '/v1/loyalty'
+  campaign:
+    host: localhost
+    paths: '/v1/campaign'
 serviceEndpoints:
   httpbin:
     url: 'https://httpbin.org'
+  loyaltyService:
+    url: 'https://mvxf4gn5-3000.inc1.devtunnels.ms/'
+  campaignService:
+    url: 'localhost:5000'
 policies:
   - basic-auth
   - cors
@@ -29,4 +39,20 @@ pipelines:
       - proxy:
           - action:
               serviceEndpoint: httpbin
+              changeOrigin: true
+  loyaltyPipeline:
+    apiEndpoints:
+      - loyalty
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: loyaltyService
+              changeOrigin: true
+  campaignPipeline:
+    apiEndpoints:
+      - campaign
+    policies:
+      - proxy:
+          - action:
+              serviceEndpoint: campaignService
               changeOrigin: true
