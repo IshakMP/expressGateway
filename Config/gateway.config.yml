@@ -16,8 +16,6 @@ apiEndpoints:
 serviceEndpoints:
   httpbin:
     url: "https://httpbin.org"
-  google:
-    url: "www.google.co.in"
   loyaltyService:
     url: "https://mvxf4gn5-3000.inc1.devtunnels.ms/"
   campaignService:
@@ -42,14 +40,6 @@ pipelines:
           - action:
               serviceEndpoint: httpbin
               changeOrigin: true
-  google:
-    apiEndpoints:
-      - google
-    policies:
-      - proxy:
-          - action:
-              serviceEndpoint: google
-              changeOrigin: true
   loyaltyPipeline:
     apiEndpoints:
       - loyalty
@@ -57,8 +47,10 @@ pipelines:
       - request-transformer:
           - action:
               headers:
+                remove:
+                - content-length
                 add:
-                  x-tocken: "'tocken1'"
+                  Header1: "'Loyalty Header'"
       - proxy:
           - action:
               serviceEndpoint: loyaltyService
@@ -67,6 +59,13 @@ pipelines:
     apiEndpoints:
       - campaign
     policies:
+      - request-transformer:
+          - action:
+              headers:
+                add:
+                  header1: "'campaign header'"
+
+
       - proxy:
           - action:
               serviceEndpoint: campaignService
